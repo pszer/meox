@@ -2,8 +2,8 @@ local assets = require "assetloader"
 
 local MeoxCol = {
 	hsl = {
-		0.516*360,
-		0.259,
+		52,
+		0.738,
 		0.720,
 	},
 

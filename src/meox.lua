@@ -26,11 +26,11 @@ function Meox:update(dt)
 	local cam_pos = scene.props.scene_camera.props.cam_position
 	local cam_rot = scene.props.scene_camera.props.cam_rotation
 
-	meoxcol.hsl[1] = meoxcol.hsl[1] + dt*160.0
+	--[[meoxcol.hsl[1] = meoxcol.hsl[1] + dt*160.0
 	if meoxcol.hsl[1] >= 360 then
 		meoxcol.hsl[1] = 0.0
 	end
-	meoxcol:generateTexture()
+	meoxcol:generateTexture()--]]
 
 	if scancodeIsHeld("left", CTRL.META) then
 		cam_rot[2] = cam_rot[2] - 1*dt
