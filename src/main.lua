@@ -47,11 +47,6 @@ function love.load( args )
 
 	__print_info()
 	assets:initThread()
-	--assets:openModel("meox.iqm")
-	local meox = Model:fromLoader("meox.iqm")
-	local meoxi = ModelInstance:newInstance(meox)
-	meoxi.props.model_i_contour_flag = true
-	scene:addModel(meoxi)
 
 	SET_GAMESTATE(gamestate_on_launch)
 end

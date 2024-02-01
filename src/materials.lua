@@ -57,12 +57,20 @@ local material_defs = {
 	},
 
 	["value"] = {
-		shaderUniform = "MatColour",
+		shaderUniform = "MatValue",
 		extension     = "val",
 		filter        = "nearest",
 		default       = def_pixel_canvas({0.0,0.0,0.0,0.0},"rgba8","nearest","clamp",2,2),
 		parameters    = {}
 	},
+
+	["outline"] = {
+		shaderUniform = "MatOutline",
+		extension     = "outline",
+		filter        = "nearest",
+		default       = def_pixel_canvas({0.0,0.0,0.0,1.0},"rgba8","nearest","clamp",2,2),
+		parameters    = {}
+	}
 
 }
 local material_def_names = {}

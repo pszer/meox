@@ -16,7 +16,9 @@ vec4 effect( vec4 color, sampler2D tex, vec2 texture_coords, vec2 screen_coords 
 	ivec2 size = texture_size;
 	int x = int(size.x * texture_coords.x);
 	int y = int(size.y * texture_coords.y);
-	float scalar = max(0.0, 1.0 - (y % 2)*strength);
+	float scalar1 = max(0.0, 1.0 - (y % 2)*strength);
+	float scalar2 = max(0.0, 1.0 - (x % 2)*strength*0.2);
+	float scalar = scalar1*scalar2;
 	float a_scalar = max(0.0, 1.0 - (y % 2)*alpha_strength);
 
 	vec4 texcolor = Texel(tex, texture_coords);

@@ -726,7 +726,7 @@ function ModelInstance:drawContour(shader)
 
 	shader:send("u_contour_outline_offset", offset)
 	shader:send("u_draw_as_contour", true)
-	shader:send("u_contour_colour", colour)
+	--shader:send("u_contour_colour", colour)
 
 	self:callDrawMesh()
 	--mesh:drawModel(shader)

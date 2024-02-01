@@ -116,6 +116,8 @@ uniform vec4 u_contour_colour;
 // material info
 uniform Image MatEmission;
 uniform Image MatColour;
+uniform Image MatValue;
+uniform Image MatOutline;
 
 float random(vec3 seed, int i){
 	vec4 seed4 = vec4(seed,i);
@@ -123,11 +125,121 @@ float random(vec3 seed, int i){
 	return fract(sin(dot_product) * 43758.5453);
 }
 
+float calculateLuminance(vec3 color) {
+    return 0.2126 * color.r + 0.7152 * color.g + 0.0722 * color.b;
+}
+
+// Function to convert RGB to HSV
+vec3 rgbToHsv(vec3 rgbColor) {
+    float Cmax = max(max(rgbColor.r, rgbColor.g), rgbColor.b);
+    float Cmin = min(min(rgbColor.r, rgbColor.g), rgbColor.b);
+    float delta = Cmax - Cmin;
+
+    float hue = 0.0;
+    if (delta > 0.0) {
+        if (Cmax == rgbColor.r) {
+            hue = mod((rgbColor.g - rgbColor.b) / delta, 6.0);
+        } else if (Cmax == rgbColor.g) {
+            hue = ((rgbColor.b - rgbColor.r) / delta) + 2.0;
+        } else {
+            hue = ((rgbColor.r - rgbColor.g) / delta) + 4.0;
+        }
+        hue *= 60.0;
+    }
+
+    float saturation = (Cmax > 0.0) ? (delta / Cmax) : 0.0;
+    float value = Cmax;
+
+    return vec3(hue, saturation, value);
+}
+
+// Function to convert HSV to RGB
+vec3 hsvToRgb(vec3 hsvColor) {
+    float C = hsvColor.z * hsvColor.y;
+    float X = C * (1.0 - abs(mod(hsvColor.x / 60.0, 2.0) - 1.0));
+    float m = hsvColor.z - C;
+
+    vec3 rgbColor;
+
+    if (hsvColor.x >= 0.0 && hsvColor.x < 60.0) {
+        rgbColor = vec3(C, X, 0.0);
+    } else if (hsvColor.x >= 60.0 && hsvColor.x < 120.0) {
+        rgbColor = vec3(X, C, 0.0);
+    } else if (hsvColor.x >= 120.0 && hsvColor.x < 180.0) {
+        rgbColor = vec3(0.0, C, X);
+    } else if (hsvColor.x >= 180.0 && hsvColor.x < 240.0) {
+        rgbColor = vec3(0.0, X, C);
+    } else if (hsvColor.x >= 240.0 && hsvColor.x < 300.0) {
+        rgbColor = vec3(X, 0.0, C);
+    } else {
+        rgbColor = vec3(C, 0.0, X);
+    }
+
+    return rgbColor + vec3(m);
+}
+
+// Function to convert RGB to HSL
+vec3 rgbToHsl(vec3 rgbColor) {
+    float Cmax = max(max(rgbColor.r, rgbColor.g), rgbColor.b);
+    float Cmin = min(min(rgbColor.r, rgbColor.g), rgbColor.b);
+    float delta = Cmax - Cmin;
+
+    float hue = 0.0;
+    if (delta > 0.0) {
+        if (Cmax == rgbColor.r) {
+            hue = mod((rgbColor.g - rgbColor.b) / delta, 6.0);
+        } else if (Cmax == rgbColor.g) {
+            hue = ((rgbColor.b - rgbColor.r) / delta) + 2.0;
+        } else {
+            hue = ((rgbColor.r - rgbColor.g) / delta) + 4.0;
+        }
+        hue *= 60.0;
+    }
+
+    float lightness = (Cmax + Cmin) / 2.0;
+
+    float saturation = 0.0;
+    if (lightness > 0.0 && lightness < 1.0) {
+        saturation = delta / (1.0 - abs(2.0 * lightness - 1.0));
+    }
+
+    return vec3(hue, saturation, lightness);
+}
+
+// Function to convert HSL to RGB
+vec3 hslToRgb(vec3 hslColor) {
+    float C = (1.0 - abs(2.0 * hslColor.z - 1.0)) * hslColor.y;
+    float X = C * (1.0 - abs(mod(hslColor.x / 60.0, 2.0) - 1.0));
+    float m = hslColor.z - C / 2.0;
+
+    vec3 rgbColor;
+
+    if (hslColor.x >= 0.0 && hslColor.x < 60.0) {
+        rgbColor = vec3(C, X, 0.0);
+    } else if (hslColor.x >= 60.0 && hslColor.x < 120.0) {
+        rgbColor = vec3(X, C, 0.0);
+    } else if (hslColor.x >= 120.0 && hslColor.x < 180.0) {
+        rgbColor = vec3(0.0, C, X);
+    } else if (hslColor.x >= 180.0 && hslColor.x < 240.0) {
+        rgbColor = vec3(0.0, X, C);
+    } else if (hslColor.x >= 240.0 && hslColor.x < 300.0) {
+        rgbColor = vec3(X, 0.0, C);
+    } else {
+        rgbColor = vec3(C, 0.0, X);
+    }
+
+    return rgbColor + vec3(m);
+}
+
 void effect( ) {
 	// when drawing the model in contour line phase, we only need a solid
 	// colour and can skip all the other fragment calculations
 	if (u_draw_as_contour) {
-		love_Canvases[0] = u_contour_colour;
+		vec4 col = Texel(MatOutline,VaryingTexCoord.xy);
+		if (col.a==0.0) {
+			discard;
+		}
+		love_Canvases[0] = col;
 		return;
 	}
 
@@ -137,12 +249,29 @@ void effect( ) {
 	// normal bump-mapping
 	vec3 normal = frag_normal;
 
-	vec4 texcolor;
-	texcolor = Texel(MainTex, VaryingTexCoord.xy);
+	//vec4 texcolor;
+	//texcolor = Texel(MainTex, VaryingTexCoord.xy);
+
+	vec4 colour_m = Texel(MatColour, VaryingTexCoord.xy);
+	vec4 value_m  = Texel(MatValue, VaryingTexCoord.xy);
+
+	vec3 hsl = rgbToHsl(colour_m.xyz);
+
+	float lum = calculateLuminance(value_m.xyz);
+
+	//vec4 texcolor = vec4(colour_m.xyz * lum,1.0);
+	vec4 texcolor = vec4(hslToRgb(vec3(hsl.xy, lum)),1.0);
+
+	float light = 1.0;
+	if (dot(frag_v_normal,vec3(0.0,-1,1.2)) <= 0.0) {
+		light = 0.25;
+	}
+
 	vec4 emission;
 	emission = Texel(MatEmission, VaryingTexCoord.xy);
 
-	love_Canvases[0] = texcolor*vec4(u_light,1.0) + texcolor*vec4(emission.xyz,1.0);
+	love_Canvases[0] = texcolor*vec4(u_light,1.0)*light + texcolor*vec4(emission.xyz,1.0);
+	love_Canvases[0].a = 1.0;
 }
 
 #endif
