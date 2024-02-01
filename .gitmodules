@@ -1,3 +1,6 @@
 [submodule "src/cpml"]
 	path = src/cpml
 	url = https://github.com/excessive/cpml.git
+[submodule "src/iqm-exm"]
+	path = src/iqm-exm
+	url = https://github.com/excessive/iqm-exm
