@@ -26,7 +26,7 @@ function Render:init()
 
 	self.shader3d = shader:new(
 		love.graphics.newShader("glsl/3d.glsl","glsl/3d.glsl"),
-		{u_light={0.05,0.05,0.05}})
+		{u_light={1.0,1.0,1.0}})
 
 	self.shader_gamma = shader:new(
 		love.graphics.newShader("glsl/gamma.glsl","glsl/gamma.glsl"),
