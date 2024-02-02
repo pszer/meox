@@ -7,10 +7,11 @@ local model  = require "model"
 local Scene = {
 	props = ScenePropPrototype{
 		scene_background = {0.084,0.212,0.217,1.0},
+		--scene_background = {0.431,0.671,0.651,1.0},
 		scene_camera = camera:new{
-			cam_position  = {0.0,0.0,20.0},
+			cam_position  = {-2.240,-5.001,10.441},
 			--cam_direction = {0.0,0.0,-1.0},
-			cam_rotation  = {0.00,0.00,0.00},
+			cam_rotation  = {-0.1,0.38,0.00},
 		},
 		scene_models = {
 		}
@@ -20,6 +21,15 @@ Scene.__index = Scene
 
 function Scene:update(dt)
 	self.props.scene_camera:update(dt)
+	self:updateModels()
+	--print("pos:", unpack(self.props.scene_camera.props.cam_position))
+	--print("rot:", unpack(self.props.scene_camera.props.cam_rotation))
+end
+
+function Scene:updateModels()
+	for i,mod in ipairs(self.props.scene_models) do
+		mod:updateAnimation()
+	end
 end
 
 function Scene:draw()

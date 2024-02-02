@@ -191,6 +191,7 @@ function Animator.timeToIndex( anim_data, time, dont_loop )
 	local max = math.max
 	local clamp = function(a,low,up) if a>up then return up end if a<low then return low end return a end
 
+	--print(anim_length, anim_first, anim_last, frame_floor)
 	local is_finished = anim_first + frame_floor >= anim_last
 
 	local frame_id1 = nil

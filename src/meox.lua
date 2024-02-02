@@ -1,6 +1,8 @@
-local scene   = require "scene"
-local assets  = require "assetloader"
-local meoxcol = require "meoxcolour"
+local scene       = require "scene"
+local assets      = require "assetloader"
+local meoxcol     = require "meoxcolour"
+local meoxanim    = require "meoxanim"
+local meoxmachine = require "meoxmachine"
 
 require "input"
 require "math"
@@ -14,17 +16,27 @@ function Meox:load()
 	meoxcol:init()
 
 	local meox = Model:fromLoader("meox.iqm")
-	local meoxi = ModelInstance:newInstance(meox)
+	meoxi = ModelInstance:newInstance(meox)
 	meoxi.props.model_i_contour_flag = true
 	scene:addModel(meoxi)
 
+	meoxanim:init(meoxi)
+
 	meoxcol:bindMaterial(meox.props.model_material)
 	meoxcol:generateTexture()
+
+	local anim1, anim2 = meoxi:getAnimator()
+	anim1:staticAnimationByName("default")
+	--anim1:playAnimationByName("idle2",0,1,true)
+	anim2:staticAnimationByName("default")
 end
 
 function Meox:update(dt)
 	local cam_pos = scene.props.scene_camera.props.cam_position
 	local cam_rot = scene.props.scene_camera.props.cam_rotation
+
+	scene:update()
+	meoxanim:updateActionAnimation()
 
 	--[[meoxcol.hsl[1] = meoxcol.hsl[1] + dt*160.0
 	if meoxcol.hsl[1] >= 360 then
@@ -61,7 +73,9 @@ function Meox:update(dt)
 		cam_pos[2] = cam_pos[2] + 5*dt
 	end
 
-	scene:update()
+	if scancodeIsHeld("b", CTRL.META) then
+		meoxanim.action:playAnimationByName("blink", 0, 0.66, false, function() print("yo") end)
+	end
 end
 
 function Meox:draw()

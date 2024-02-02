@@ -264,7 +264,7 @@ void effect( ) {
 
 	float light = 1.0;
 	if (dot(frag_v_normal,vec3(0.0,-1,1.2)) <= 0.0) {
-		light = 0.25;
+		light = 0.1;
 	}
 
 	vec4 emission;

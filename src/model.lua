@@ -839,6 +839,14 @@ function ModelInstance:defaultPose()
 	self.bone_matrices = outframe
 end
 
+function ModelInstance:getAnimationInterp()
+	return self.props.model_i_animator_interp
+end
+function ModelInstance:setAnimationInterp(i)
+	if i < 0.0 then i = 0.0 end
+	if i > 1.0 then i = 1.0 end
+	self.props.model_i_animator_interp = i
+end
 
 --[[
 --

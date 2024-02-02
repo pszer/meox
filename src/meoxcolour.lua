@@ -2,9 +2,9 @@ local assets = require "assetloader"
 
 local MeoxCol = {
 	hsl = {
-		52,
-		0.738,
-		0.720,
+		50,
+		0.638,
+		0.670,
 	},
 
 	col_tex = love.graphics.newCanvas(128,128),
