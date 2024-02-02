@@ -1,17 +1,31 @@
 local MeoxState = {}
-MeoxState.__index = {}
+MeoxState.__index = MeoxState
 
 function MeoxState:new(parents, enter, leave, update)
 	local t = {
 		parents = {},
-		enter = enter,
-		leave = leave,
+		enter = function(self,machine)
+			self.entry_time = love.timer.getTime()
+			if enter then
+				enter(self,machine)
+			end
+		end,
+		leave = function(self,machine)
+			if leave then
+				leave(self,machine)
+			end
+		end,
 		update = function(self,machine)
 			for i,v in ipairs(self.parents) do
-				v.update(self,machine)
+				if v.update then
+					v.update(v,machine)
+				end
 			end
-			update(self,machine)
-		end
+			if update then
+				update(self,machine)
+			end
+		end,
+		entry_time = 0
 	}
 
 	for i,v in ipairs(parents) do
@@ -20,6 +34,15 @@ function MeoxState:new(parents, enter, leave, update)
 
 	setmetatable(t, MeoxState)
 	return t
+end
+
+function MeoxState:getTimeEntered()
+	return self.entry_time or 0
+end
+function MeoxState:getDuration()
+	local t = self.entry_time
+	if not t then return 0 end
+	return love.timer.getTime() - t
 end
 
 return MeoxState

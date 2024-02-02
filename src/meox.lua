@@ -40,7 +40,7 @@ function Meox:update(dt)
 	local cam_rot = scene.props.scene_camera.props.cam_rotation
 
 	scene:update(dt)
-	meoxmachine:update()
+	meoxmachine:update(dt)
 	meoxanim:updateActionAnimation()
 
 	--[[meoxcol.hsl[1] = meoxcol.hsl[1] + dt*160.0
@@ -50,11 +50,11 @@ function Meox:update(dt)
 	meoxcol:generateTexture()--]]
 
 	if scancodeIsHeld("left", CTRL.META) then
-		cam_rot[2] = cam_rot[2] - 1*dt
+		cam_rot[2] = cam_rot[2] - 50*dt
 		--cam_pos[1] = cam_pos[1] - 5*dt
 	end
 	if scancodeIsHeld("right", CTRL.META) then
-		cam_rot[2] = cam_rot[2] + 1*dt
+		cam_rot[2] = cam_rot[2] + 50*dt
 		--cam_pos[1] = cam_pos[1] + 5*dt
 	end
 	if scancodeIsHeld("up", CTRL.META) then

@@ -34,7 +34,7 @@ function Render:init()
 
 	self.shader_screen_filter = shader:new(
 		love.graphics.newShader("glsl/screenfilter.glsl","glsl/screenfilter.glsl"),
-		{strength=0.75,alpha_strength=0.4})
+		{strength=0.45,alpha_strength=0.4})
 end
 
 function Render:setup3DCanvas()

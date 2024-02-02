@@ -41,7 +41,7 @@ function Scene:interpCameraPosition(dt)
 	local pDx,pDy,pDz = tP[1]-camp[1], tP[2]-camp[2], tP[3]-camp[3]
 	local pRx,pRy,pRz = tR[1]-camr[1], tR[2]-camr[2], tR[3]-camr[3]
 
-	dt=dt*5.0
+	dt=dt*3
 	if dt>1.0 then dt=1.0 end
 
 	local nx,ny,nz =
@@ -51,9 +51,9 @@ function Scene:interpCameraPosition(dt)
 	self.props.scene_camera:setPosition{nx,ny,nz}
 
 	nx,ny,nz =
-		camr[1]+pRx * dt,
-		camr[2]+pRy * dt,
-		camr[3]+pRz * dt
+		camr[1]+pRx * dt*0.25,
+		camr[2]+pRy * dt*0.25,
+		camr[3]+pRz * dt*0.25
 	self.props.scene_camera:setRotation{nx,ny,nz}
 
 end

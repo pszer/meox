@@ -1,6 +1,7 @@
 require "gamestate"
 require "console"
 require "model"
+require "os"
 local render   = require "render"
 local assets   = require "assetloader"
 local material = require "materials"
@@ -32,6 +33,8 @@ function __parse_args( commandline_args )
 end
 
 function love.load( args )
+	math.randomseed(os.time(os.date("!*t")))
+
 	local gamestate_on_launch = Meox
 	local params = __parse_args(args)
 
