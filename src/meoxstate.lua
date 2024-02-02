@@ -19,6 +19,7 @@ function MeoxState:new(parents, enter, leave, update)
 	end
 
 	setmetatable(t, MeoxState)
+	return t
 end
 
 return MeoxState

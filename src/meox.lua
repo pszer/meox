@@ -3,6 +3,7 @@ local assets      = require "assetloader"
 local meoxcol     = require "meoxcolour"
 local meoxanim    = require "meoxanim"
 local meoxmachine = require "meoxmachine"
+print("meoxmachine",meoxmachine)
 
 require "input"
 require "math"
@@ -29,13 +30,17 @@ function Meox:load()
 	anim1:staticAnimationByName("default")
 	--anim1:playAnimationByName("idle2",0,1,true)
 	anim2:staticAnimationByName("default")
+
+	meoxmachine:init()
+	meoxmachine:activateState("meox_idle1")
 end
 
 function Meox:update(dt)
 	local cam_pos = scene.props.scene_camera.props.cam_position
 	local cam_rot = scene.props.scene_camera.props.cam_rotation
 
-	scene:update()
+	scene:update(dt)
+	meoxmachine:update()
 	meoxanim:updateActionAnimation()
 
 	--[[meoxcol.hsl[1] = meoxcol.hsl[1] + dt*160.0
@@ -71,10 +76,6 @@ function Meox:update(dt)
 	end
 	if scancodeIsHeld("lctrl", CTRL.META) then
 		cam_pos[2] = cam_pos[2] + 5*dt
-	end
-
-	if scancodeIsHeld("b", CTRL.META) then
-		meoxanim.action:playAnimationByName("blink", 0, 0.66, false, function() print("yo") end)
 	end
 end
 

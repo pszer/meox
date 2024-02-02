@@ -4,6 +4,8 @@ local render = require "render"
 local camera = require "camera"
 local model  = require "model"
 
+local camera_angles = require "cfg.camera_angles"
+
 local Scene = {
 	props = ScenePropPrototype{
 		scene_background = {0.084,0.212,0.217,1.0},
@@ -15,15 +17,45 @@ local Scene = {
 		},
 		scene_models = {
 		}
-	}
+	},
+
+	target_pos = camera_angles.default.pos,
+	target_rot = camera_angles.default.rot,
 }
 Scene.__index = Scene
 
 function Scene:update(dt)
+	self:interpCameraPosition(dt)
 	self.props.scene_camera:update(dt)
 	self:updateModels()
 	--print("pos:", unpack(self.props.scene_camera.props.cam_position))
 	--print("rot:", unpack(self.props.scene_camera.props.cam_rotation))
+end
+
+function Scene:interpCameraPosition(dt)
+	local camp,camr = self.props.scene_camera:getPosition(), self.props.scene_camera:getRotation()
+
+	local tP = self.target_pos
+	local tR = self.target_rot
+
+	local pDx,pDy,pDz = tP[1]-camp[1], tP[2]-camp[2], tP[3]-camp[3]
+	local pRx,pRy,pRz = tR[1]-camr[1], tR[2]-camr[2], tR[3]-camr[3]
+
+	dt=dt*5.0
+	if dt>1.0 then dt=1.0 end
+
+	local nx,ny,nz =
+		camp[1]+pDx * dt,
+		camp[2]+pDy * dt,
+		camp[3]+pDz * dt
+	self.props.scene_camera:setPosition{nx,ny,nz}
+
+	nx,ny,nz =
+		camr[1]+pRx * dt,
+		camr[2]+pRy * dt,
+		camr[3]+pRz * dt
+	self.props.scene_camera:setRotation{nx,ny,nz}
+
 end
 
 function Scene:updateModels()

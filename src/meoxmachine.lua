@@ -2,7 +2,8 @@
 -- meox state machine
 --]]
 
-local meoxanim = require "meoxanim"
+local meoxanim  = require "meoxanim"
+local meoxstate = require "meoxstate"
 
 local MeoxStateMachine = {
 
@@ -40,7 +41,7 @@ function MeoxStateMachine:deactivateState(state_name)
 	if not s then error("MeoxStateMachnue:deactivateState(): non-existant state") end
 	for i,v in ipairs(self.active_states) do
 		if s == v then
-			table.remove(self.active_states, s)
+			table.remove(self.active_states, i)
 			s:leave(self)
 		end
 	end
@@ -50,7 +51,7 @@ function MeoxStateMachine:init()
 
 	local last_blink_time = 0
 	self.states["meox_blink"] =
-		MeoxState:new({},
+		meoxstate:new({},
 		function(self,machine) -- enter
 			local rand = math.random()*0.222 + 0.666 -- random speed 0.666-0.888
 			last_blink_time = love.timer.getTime()
@@ -70,12 +71,12 @@ function MeoxStateMachine:init()
 		if love.timer.getTime() - last_blink_time < 0.4 then return end
 		local rand = math.random()
 		if rand < 1/(60*2.5) then -- avg 1 blink per 2.5 seconds
-			machine:activateState("meox_blink") end
+			self:activateState("meox_blink") end
 	end
 
 	local last_idle2_time = 0
 	self.states["meox_idle1"] =
-		MeoxState:new({},
+		meoxstate:new({},
 		function(self,machine) -- enter
 			meoxanim.animator1:playAnimationByName("idle1",0,1,true)
 		end,
@@ -100,11 +101,13 @@ function MeoxStateMachine:init()
 					return
 				end
 			end
+
+			do_a_blink()
 		end
 		)
 
 	self.states["meox_idle2"] =
-		MeoxState:new({},
+		meoxstate:new({},
 		function(self,machine) -- enter
 			last_idle2_time = love.timer.getTime()
 			meoxanim.animator2:playAnimationByName("idle2",0,1,false,
@@ -125,7 +128,11 @@ function MeoxStateMachine:init()
 			meoxanim.meoxi:setAnimationInterp(
 			 meoxanim.meoxi:getAnimationInterp() + dt*2.0
 			)
+
+			do_a_blink()
 		end
 		)
 
 end
+
+return MeoxStateMachine
