@@ -6,11 +6,21 @@ function MeoxState:new(parents, enter, leave, update)
 		parents = {},
 		enter = function(self,machine)
 			self.entry_time = love.timer.getTime()
+			for i,v in ipairs(self.parents) do
+				if v.enter then
+					v.enter(v,machine)
+				end
+			end
 			if enter then
 				enter(self,machine)
 			end
 		end,
 		leave = function(self,machine)
+			for i,v in ipairs(self.parents) do
+				if v.leave then
+					v.leave(v,machine)
+				end
+			end
 			if leave then
 				leave(self,machine)
 			end

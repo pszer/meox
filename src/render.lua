@@ -7,11 +7,15 @@ local Render = {
 	shader3d   = nil,
 	shader_gamma = nil,
 	shader_screen_filter = nil,
+	shader_background = nil,
+
+	nil_texture = nil
 }
 
 function Render:init()
 	local w,h = love.graphics.getDimensions()
 
+	self.nil_texture = love.graphics.newCanvas(w/2,h/2)
 	self.viewport   = love.graphics.newCanvas(w,h, {format="rgba16f"})
 
 	self.viewportgui = love.graphics.newCanvas(w,h, {format="rgba8"})
@@ -35,6 +39,10 @@ function Render:init()
 	self.shader_screen_filter = shader:new(
 		love.graphics.newShader("glsl/screenfilter.glsl","glsl/screenfilter.glsl"),
 		{strength=0.45,alpha_strength=0.4})
+
+	self.shader_background = shader:new(
+		love.graphics.newShader("glsl/bg.glsl","glsl/bg.glsl"),
+		{col1={0,0,0},col2={1,1,1}})
 end
 
 function Render:setup3DCanvas()

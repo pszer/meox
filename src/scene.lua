@@ -8,7 +8,12 @@ local camera_angles = require "cfg.camera_angles"
 
 local Scene = {
 	props = ScenePropPrototype{
-		scene_background = {0.084,0.212,0.217,1.0},
+		--scene_background = {0.084,0.212,0.217,1.0},
+		--
+		--scene_background = {0.612, 0.38, 0.282},
+		scene_background2 = {0.878, 0.745, 0.686},
+		scene_background1 = {0.878, 0.573, 0.525},
+
 		--scene_background = {0.431,0.671,0.651,1.0},
 		scene_camera = camera:new{
 			cam_position  = {-2.240,-5.001,10.441},
@@ -28,8 +33,18 @@ function Scene:update(dt)
 	self:interpCameraPosition(dt)
 	self.props.scene_camera:update(dt)
 	self:updateModels()
-	--print("pos:", unpack(self.props.scene_camera.props.cam_position))
-	--print("rot:", unpack(self.props.scene_camera.props.cam_rotation))
+	-- print("pos:", unpack(self.props.scene_camera.props.cam_position))
+	-- print("rot:", unpack(self.props.scene_camera.props.cam_rotation))
+end
+
+function Scene:setCameraAngle(pos, rot)
+	if rot == nil then
+		self:setCameraAngle(pos.pos, pos.rot)
+		return
+	end
+
+	self.target_pos = pos
+	self.target_rot = rot
 end
 
 function Scene:interpCameraPosition(dt)
@@ -41,7 +56,7 @@ function Scene:interpCameraPosition(dt)
 	local pDx,pDy,pDz = tP[1]-camp[1], tP[2]-camp[2], tP[3]-camp[3]
 	local pRx,pRy,pRz = tR[1]-camr[1], tR[2]-camr[2], tR[3]-camr[3]
 
-	dt=dt*3
+	dt=dt*2.5
 	if dt>1.0 then dt=1.0 end
 
 	local nx,ny,nz =
@@ -51,9 +66,9 @@ function Scene:interpCameraPosition(dt)
 	self.props.scene_camera:setPosition{nx,ny,nz}
 
 	nx,ny,nz =
-		camr[1]+pRx * dt*0.25,
-		camr[2]+pRy * dt*0.25,
-		camr[3]+pRz * dt*0.25
+		camr[1]+pRx * dt*0.66,
+		camr[2]+pRy * dt*0.66,
+		camr[3]+pRz * dt*0.66
 	self.props.scene_camera:setRotation{nx,ny,nz}
 
 end
@@ -65,12 +80,24 @@ function Scene:updateModels()
 end
 
 function Scene:draw()
-	render:setup3DCanvas()
+	love.graphics.reset()
 
-	local bg_col = self.props.scene_background
-	local r,g,b = love.math.linearToGamma(bg_col[1], bg_col[2], bg_col[3])
+	render:setup3DCanvas()
+	local bg_col1 = self.props.scene_background1
+	local bg_col2 = self.props.scene_background2
+	--local r,g,b = love.math.linearToGamma(bg_col[1], bg_col[2], bg_col[3])
 	--local r,g,b = bg_col[1], bg_col[2], bg_col[3]
-	love.graphics.clear(r,g,b)
+	--love.graphics.clear(r,g,b)
+	local bg_shader = render.shader_background
+	--bg_shader.shader:sendColor("col1")
+	local vw,vh = render.viewport3d:getDimensions()
+	love.graphics.clear(false,true,true)
+	love.graphics.setShader(bg_shader.shader)
+	bg_shader.shader:sendColor("col1", bg_col1)
+	bg_shader.shader:sendColor("col2", bg_col2)
+	love.graphics.draw(render.nil_texture)
+
+	--love.graphics.clear()
 
 	render:setup3DShader()
 	self.props.scene_camera:pushToShader()
@@ -99,7 +126,7 @@ function Scene:addModel(model)
 		if v==model then return end end
 	table.insert(mods, model)
 end
-function Scene:deleteModel(model)
+function Scene:removeModel(model)
 	local mods = self.props.scene_models
 	for i,v in ipairs(mods) do
 		if v==model then
