@@ -38,7 +38,7 @@ function Render:init()
 
 	self.shader_screen_filter = shader:new(
 		love.graphics.newShader("glsl/screenfilter.glsl","glsl/screenfilter.glsl"),
-		{strength=0.45,alpha_strength=0.4})
+		{strength=0.45,alpha_strength=0.55})
 
 	self.shader_background = shader:new(
 		love.graphics.newShader("glsl/bg.glsl","glsl/bg.glsl"),
@@ -59,6 +59,19 @@ end
 function Render:dropShader()
 	love.graphics.setShader()
 	love.graphics.setDepthMode()
+end
+
+function Render:applyLCDEffect()
+	-- apply the faux-lcd screen filter
+	love.graphics.setCanvas(self.viewport3d_buffer)
+	
+	local w,h = self.viewport3d_buffer:getDimensions()
+	self.shader_screen_filter:set()
+	self.shader_screen_filter:send("texture_size",{w,h})
+
+	love.graphics.draw(self.viewport3d)
+	self:swapViewport3DBuffer()
+	self:dropShader()
 end
 
 function Render:blit3DCanvasToViewport(viewport)

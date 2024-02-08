@@ -35,7 +35,8 @@ end
 function love.load( args )
 	math.randomseed(os.time(os.date("!*t")))
 
-	local gamestate_on_launch = Meox
+	--local gamestate_on_launch = Meox
+	local gamestate_on_launch = require "loadingscreen"
 	local params = __parse_args(args)
 
 	local arg_coms = {

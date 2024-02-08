@@ -199,6 +199,11 @@ function Loader:finishQueue()
 	end
 end
 
+function Loader:finished()
+	self:popRequest(false)
+	return self.requests_count == 0
+end
+
 -- checks if an asset is being actively requested right now
 function Loader:isCurrentlyRequested(base_dir, filename)
 	local path = base_dir .. filename

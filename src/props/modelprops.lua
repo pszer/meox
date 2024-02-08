@@ -52,7 +52,7 @@ ModelInstancePropPrototype = Props:prototype{
 	{"model_i_matrix_det", "number", 1, nil, "determinant of the model matrix"},
 
 	{"model_i_outline_colour", "table", nil, PropDefaultTable{0,0,0,1}, "model's contour colour"},
-	{"model_i_outline_scale", "number", 1.01, nil,                      "model's contour scale factor"},
+	{"model_i_outline_scale", "number", 0.20, nil,                      "model's contour scale factor"},
 	{"model_i_contour_flag", "boolean", false},
 
 	{"model_i_bounding_box", "table", nil, PropDefaultTable{min={0,0,0},max={0,0,0}}, [[model's bounding box, given by two min/max vectors, 

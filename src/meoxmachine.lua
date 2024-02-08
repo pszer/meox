@@ -2,10 +2,12 @@
 -- meox state machine
 --]]
 
-local meoxanim   = require "meoxanim"
-local meoxstate  = require "meoxstate"
-local meoxassets = require "meoxassets"
-local scene      = require "scene"
+local meoxanim    = require "meoxanim"
+local meoxstate   = require "meoxstate"
+local meoxassets  = require "meoxassets"
+local meoxbuttons = require "meoxbuttons"
+local meoxicons   = require "meoxicons"
+local scene       = require "scene"
 
 local camera_angles = require "cfg.camera_angles"
 
@@ -164,7 +166,12 @@ function MeoxStateMachine:init()
 	self.states["meox_idle"] = 
 		meoxstate:new({},
 		function(self,machine) -- enter
-			scene:setCameraAngle(camera_angles.default)
+			--scene:setCameraAngle(camera_angles.default)
+			if not meoxicons.hidden then
+				scene:setCameraAngle(camera_angles.menu_open)
+			else
+				scene:setCameraAngle(camera_angles.default)
+			end
 		end,
 		function(self,machine) -- leave
 		end,
@@ -225,7 +232,6 @@ function MeoxStateMachine:init()
 
 			-- random chance to go to idlesit animation
 			if machine.states.meox_idle1:getDuration() > 22.0 and chance(60*10) then
-				print("sit!")
 				machine:transitionState("meox_idle1","meox_idletosit")
 			end
 
@@ -317,22 +323,25 @@ function MeoxStateMachine:init()
 	self.states["meox_eat"] =
 		meoxstate:new({ },
 		function(self,machine) -- enter
-			meoxanim.animator2:playAnimationByName("eat",0,1.25,false,
+			meoxanim.animator2:playAnimationByName("eat",0,1.00,false,
 				function()
 					machine:transitionState("meox_eat","meox_idle1")
 				end)
 
 			scene:addModel(meoxassets.bowli)
 			local anim1,anim2 = meoxassets.bowli:getAnimator()
-			anim1:playAnimationByName("eat",0,1.25,false)
+			anim1:playAnimationByName("eat",0,1.00,false)
 			meoxassets.bowli:updateAnimation()
 
 			scene:setCameraAngle(camera_angles.eat)
+			meoxbuttons:lock()
 		end,
 
 		function(self,machine) -- leave
 			machine.hunger_v = 1.0
 			scene:removeModel(meoxassets.bowli)
+			meoxicons:switchToMenu("main_menu")
+			meoxbuttons:unlock()
 		end,
 
 		function(self,machine) -- update

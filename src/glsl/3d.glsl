@@ -115,9 +115,13 @@ uniform vec4 u_contour_colour;
 
 // material info
 uniform Image MatEmission;
+uniform bool MatEmissionExists;
 uniform Image MatColour;
+uniform bool MatColourExists;
 uniform Image MatValue;
+uniform bool MatValueExists;
 uniform Image MatOutline;
+uniform bool MatOutlineExists;
 
 float random(vec3 seed, int i){
 	vec4 seed4 = vec4(seed,i);
@@ -252,15 +256,17 @@ void effect( ) {
 	//vec4 texcolor;
 	//texcolor = Texel(MainTex, VaryingTexCoord.xy);
 
-	vec4 colour_m = Texel(MatColour, VaryingTexCoord.xy);
-	vec4 value_m  = Texel(MatValue, VaryingTexCoord.xy);
+	vec4 texcolor;
 
-	vec3 hsl = rgbToHsl(colour_m.xyz);
-
-	float lum = calculateLuminance(value_m.xyz);
-
-	//vec4 texcolor = vec4(colour_m.xyz * lum,1.0);
-	vec4 texcolor = vec4(hslToRgb(vec3(hsl.xy, lum)),1.0);
+	if (MatValueExists && MatColourExists) {
+		vec4 colour_m = Texel(MatColour, VaryingTexCoord.xy);
+		vec4 value_m  = Texel(MatValue, VaryingTexCoord.xy);
+		vec3 hsl = rgbToHsl(colour_m.xyz);
+		float lum = calculateLuminance(value_m.xyz);
+		texcolor = vec4(hslToRgb(vec3(hsl.xy, lum)),1.0);
+	} else {
+		texcolor = Texel(MainTex, VaryingTexCoord.xy);
+	}
 
 	float light = 1.0;
 	if (dot(frag_v_normal,vec3(0.0,-1,1.2)) <= 0.0) {

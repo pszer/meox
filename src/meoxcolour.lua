@@ -8,9 +8,9 @@ local MeoxCol = {
 	},--]]
 
 	hsl = {
-		18,
-		0.438,
-		0.330,
+		20,
+		0.638,
+		0.530,
 	},
 
 	col_tex = love.graphics.newCanvas(128,128),
@@ -118,6 +118,37 @@ end
 function MeoxCol:bindMaterial(material)
 	material:setMaterial("colour",self.col_tex,{})
 	material:setMaterial("value",self.lum_tex,{})
+end
+
+function MeoxCol:huePlus()
+	self.hsl[1] = self.hsl[1] + 12
+	if self.hsl[1] >= 360 then self.hsl[1]=0 end
+	self:generateTexture()
+end
+function MeoxCol:hueMinus()
+	self.hsl[1] = self.hsl[1] - 12
+	if self.hsl[1] < 0 then self.hsl[1]=360-20 end
+	self:generateTexture()
+end
+function MeoxCol:satPlus()
+	self.hsl[2] = self.hsl[2] + 0.1
+	if self.hsl[2] > 1.0 then self.hsl[2]=1.0 end
+	self:generateTexture()
+end
+function MeoxCol:satMinus()
+	self.hsl[2] = self.hsl[2] - 0.1
+	if self.hsl[2] < 0 then self.hsl[2]=0 end
+	self:generateTexture()
+end
+function MeoxCol:lumPlus()
+	self.hsl[3] = self.hsl[3] + 0.05
+	if self.hsl[3] > 1.0 then self.hsl[3]=1.0 end
+	self:generateTexture()
+end
+function MeoxCol:lumMinus()
+	self.hsl[3] = self.hsl[3] - 0.05
+	if self.hsl[3] < 0 then self.hsl[3]=0 end
+	self:generateTexture()
 end
 
 return MeoxCol

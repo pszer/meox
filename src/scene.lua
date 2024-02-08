@@ -21,7 +21,8 @@ local Scene = {
 			cam_rotation  = {-0.1,0.38,0.00},
 		},
 		scene_models = {
-		}
+		},
+		scene_camera_interp_speed = 12
 	},
 
 	target_pos = camera_angles.default.pos,
@@ -56,7 +57,7 @@ function Scene:interpCameraPosition(dt)
 	local pDx,pDy,pDz = tP[1]-camp[1], tP[2]-camp[2], tP[3]-camp[3]
 	local pRx,pRy,pRz = tR[1]-camr[1], tR[2]-camr[2], tR[3]-camr[3]
 
-	dt=dt*2.5
+	dt=dt*self.props.scene_camera_interp_speed
 	if dt>1.0 then dt=1.0 end
 
 	local nx,ny,nz =
@@ -75,6 +76,7 @@ end
 
 function Scene:updateModels()
 	for i,mod in ipairs(self.props.scene_models) do
+		mod:modelMatrix()
 		mod:updateAnimation()
 	end
 end
@@ -83,41 +85,26 @@ function Scene:draw()
 	love.graphics.reset()
 
 	render:setup3DCanvas()
+	love.graphics.clear(false,true,true)
+
 	local bg_col1 = self.props.scene_background1
 	local bg_col2 = self.props.scene_background2
-	--local r,g,b = love.math.linearToGamma(bg_col[1], bg_col[2], bg_col[3])
-	--local r,g,b = bg_col[1], bg_col[2], bg_col[3]
-	--love.graphics.clear(r,g,b)
 	local bg_shader = render.shader_background
-	--bg_shader.shader:sendColor("col1")
+
 	local vw,vh = render.viewport3d:getDimensions()
+
 	love.graphics.clear(false,true,true)
+
 	love.graphics.setShader(bg_shader.shader)
 	bg_shader.shader:sendColor("col1", bg_col1)
 	bg_shader.shader:sendColor("col2", bg_col2)
 	love.graphics.draw(render.nil_texture)
 
-	--love.graphics.clear()
-
 	render:setup3DShader()
 	self.props.scene_camera:pushToShader()
 	self:drawModels()
 
-	render:dropShader()
 	love.graphics.reset()
-
-	-- apply the faux-lcd screen filter
-	love.graphics.setCanvas(render.viewport3d_buffer)
-	
-	local w,h = render.viewport3d_buffer:getDimensions()
-	render.shader_screen_filter:set()
-	render.shader_screen_filter:send("texture_size",{w,h})
-
-	love.graphics.draw(render.viewport3d)
-	render:swapViewport3DBuffer()
-	render:dropShader()
-
-	render:blit3DCanvasToViewport()
 end
 
 function Scene:addModel(model)

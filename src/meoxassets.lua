@@ -14,6 +14,23 @@ function MeoxAssets:init()
 	self.bowli = ModelInstance:newInstance(bowl)
 	self.bowli.props.model_i_contour_flag = true
 
+	self.icon_sleep = Model:fromLoader("iconsleep.iqm")
+	self.icon_eat = Model:fromLoader("iconeat.iqm")
+	self.icon_pet = Model:fromLoader("iconpet.iqm")
+	self.icon_misc = Model:fromLoader("iconmisc.iqm")
+	self.icon_back = Model:fromLoader("iconback.iqm")
+
+	self.icon_hueplus  = Model:fromLoader("hueplus.iqm")
+	self.icon_hueminus = Model:fromLoader("hueminus.iqm")
+	self.icon_satplus  = Model:fromLoader("satplus.iqm")
+	self.icon_satminus = Model:fromLoader("satminus.iqm")
+	self.icon_lumplus  = Model:fromLoader("lumplus.iqm")
+	self.icon_lumminus = Model:fromLoader("lumminus.iqm")
+
+	self.iconi = ModelInstance:newInstance(self.icon_back)
+	self.iconi:setScale{16,16,16}
+	self.iconi.props.model_i_contour_flag = true
+
 	self.case_img = assets:getTextureReference("case.png")
 	self.button_l1_img = assets:getTextureReference("l1.png")
 	self.button_m1_img = assets:getTextureReference("m1.png")

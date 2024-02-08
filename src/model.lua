@@ -148,7 +148,7 @@ function Model:getMesh()
 end
 
 function Model:ref()
-	print(string.format("model:ref() ++ %s", self.props.model_name))
+	--print(string.format("model:ref() ++ %s", self.props.model_name))
 	self.ref_count = self.ref_count + 1
 	--print(string.format("Model:ref(): %s ref_count %d", self.props.model_name, self.ref_count))
 end
@@ -719,7 +719,7 @@ function ModelInstance:drawContour(shader)
 	local model = self:getModel()
 	--local mesh = model:getMesh()
 	local colour = self.props.model_i_outline_colour
-	local offset = 0.20
+	local offset = self.props.model_i_outline_scale
 
 	--love.graphics.setFrontFaceWinding(model.props.model_vertex_winding)
 	love.graphics.setMeshCullMode("back")
@@ -1211,7 +1211,7 @@ function Model:getAnimation(animation)
 	if not animation then return nil end
 	if not self.props.model_animated then return nil end
 	anim_data = self.props.model_animations[animation]
-	if not anim_data then error(string.format("Model:getAnimation(): model \"%s\" has no animation \"%s\".", animation)) end
+	if not anim_data then error(string.format("Model:getAnimation(): model \"%s\" has no animation \"%s\".", self.props.model_name, animation)) end
 	return anim_data
 end
 

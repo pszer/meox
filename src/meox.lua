@@ -1,10 +1,16 @@
 local scene       = require "scene"
+local render      = require "render"
 local assets      = require "assetloader"
 local meoxcol     = require "meoxcolour"
 local meoxanim    = require "meoxanim"
 local meoxmachine = require "meoxmachine"
 local meoxassets  = require "meoxassets"
 local meoxbuttons = require "meoxbuttons"
+
+local meoxicons   = require "meoxicons"
+require "meoxiconsinit"
+
+local camera_angles = require "cfg.camera_angles"
 
 require "input"
 require "math"
@@ -23,6 +29,7 @@ function Meox:load()
 	--meoxi = ModelInstance:newInstance(meox)
 	--meoxi.props.model_i_contour_flag = true
 	scene:addModel(meoxassets.meoxi)
+	--scene:addModel(meoxassets.iconi)
 
 	meoxanim:init(meoxassets.meoxi)
 
@@ -35,13 +42,19 @@ function Meox:load()
 
 	meoxmachine:init()
 	meoxmachine:activateState("meox_idle1")
+
+	meoxicons:init()
+	meoxicons:switchToMenu("main_menu")
+	meoxicons:hide()
+	--
 end
 
 function Meox:update(dt)
 	local cam_pos = scene.props.scene_camera.props.cam_position
 	local cam_rot = scene.props.scene_camera.props.cam_rotation
 	
-	meoxbuttons:update()
+	meoxbuttons:update(dt)
+	meoxicons:update(dt)
 	scene:update(dt)
 	meoxmachine:update(dt)
 	meoxanim:updateActionAnimation()
@@ -80,13 +93,43 @@ function Meox:update(dt)
 	if scancodeIsHeld("lctrl", CTRL.META) then
 		cam_pos[2] = cam_pos[2] + 5*dt
 	end
+
+	if scancodeIsDown("b", CTRL.META) then
+		if meoxicons.target_pos == camera_angles.icons_show.pos then
+			meoxicons.target_pos = camera_angles.icons_hide.pos
+			meoxicons.target_rot = camera_angles.icons_hide.rot
+
+			scene.target_pos = camera_angles.default.pos
+			scene.target_rot = camera_angles.default.rot
+		else
+			meoxicons.target_pos = camera_angles.icons_show.pos
+			meoxicons.target_rot = camera_angles.icons_show.rot
+
+			scene.target_pos = camera_angles.menu_open.pos
+			scene.target_rot = camera_angles.menu_open.rot
+		end
+	end
+
+	if not meoxbuttons.locked then
+		if meoxbuttons:LDown() then
+			meoxicons:selectionMoveUp() end
+		if meoxbuttons:RDown() then
+			meoxicons:selectionMoveDown() end
+		if meoxbuttons:MDown() then
+			meoxicons:click() end
+	end
 	--scene.props.scene_camera:setPosition(cam_pos)
 	--scene.props.scene_camera:setRotation(cam_rot)
 end
 
 function Meox:draw()
 	scene:draw()
+	meoxicons:draw()
 
+	render:applyLCDEffect()
+	render:blit3DCanvasToViewport()
+
+	--love.graphics.setCanvas(render.viewport)
 	love.graphics.draw(meoxassets.case_img,0,0,0,1,1)
 	meoxbuttons:draw()
 end

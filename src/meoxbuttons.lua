@@ -4,7 +4,9 @@ local MeoxButtons = {
 
 	state_l = "none", -- "none", "hover", "press", "held"
 	state_m = "none",
-	state_r = "none"
+	state_r = "none",
+
+	locked = false,
 
 }
 MeoxButtons.__index = MeoxButtons
@@ -81,8 +83,13 @@ end
 function MeoxButtons:LDown()
 	return self.state_l == "press" end
 function MeoxButtons:MDown()
-	return self.state_l == "press" end
+	return self.state_m == "press" end
 function MeoxButtons:RDown()
-	return self.state_l == "press" end
+	return self.state_r == "press" end
+
+function MeoxButtons:lock()
+	self.locked = true end
+function MeoxButtons:unlock()
+	self.locked = false end
 
 return MeoxButtons

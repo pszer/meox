@@ -1,5 +1,29 @@
 local TEXTURE_ATTRIBUTES = {
-	["case.png"] = {
-	},
+	["backicon.png"]={},
+	["bowltexture@col.png"]={},
+	["bowltexture.png"]={},
+	["bowltexture@val.png"]={},
+	["buttonpush.png"]={},
+	["case.png"]={},
+	["eaticon.png"]={},
+	["l1.png"]={},
+	["l2.png"]={},
+	["m1.png"]={},
+	["m2.png"]={},
+	["meoxmask.png"]={},
+	["meoxtexture@col.png"]={},
+	["meoxtexture@emit.png"]={},
+	["meoxtexture@outline.png"]={},
+	["meoxtexture.png"]={},
+	["meoxtexture@val.png"]={},
+	["meoxvaluemask.png"]={},
+	["miscicon.png"]={},
+	["nil.png"]={},
+	["peticon.png"]={},
+	["r1.png"]={},
+	["r2.png"]={},
+	["sleepicon.png"]={},
+	["splash.png"]={},
+	["undef.png"]={}
 }
 return TEXTURE_ATTRIBUTES
