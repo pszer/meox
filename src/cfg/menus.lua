@@ -18,6 +18,10 @@ return {
 		"eat",
 	},
 
+	["pet_menu"] = {
+		"pet_back",
+	},
+
 	["colour_menu"] = {
 		"hueplus",
 		"hueminus",

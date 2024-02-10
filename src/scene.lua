@@ -22,7 +22,7 @@ local Scene = {
 		},
 		scene_models = {
 		},
-		scene_camera_interp_speed = 12
+		scene_camera_interp_speed = 12,
 	},
 
 	target_pos = camera_angles.default.pos,
@@ -100,7 +100,7 @@ function Scene:draw()
 	bg_shader.shader:sendColor("col2", bg_col2)
 	love.graphics.draw(render.nil_texture)
 
-	render:setup3DShader()
+	render:setup3DShader(true)
 	self.props.scene_camera:pushToShader()
 	self:drawModels()
 

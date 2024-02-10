@@ -25,6 +25,8 @@ function meoxicons:init()
 		end)
 	self.icon_defs["pet"] = meoxicon:new(meoxassets.icon_pet,
 		function()
+			meoxmachine:transitionState("meox_idle", "meox_pet")
+			self:switchToMenu("pet_menu")
 		end)
 	self.icon_defs["misc"] = meoxicon:new(meoxassets.icon_misc,
 		function()
@@ -69,4 +71,10 @@ function meoxicons:init()
 		function() meoxcolour:lumPlus() end)
 	self.icon_defs["lumminus"] = meoxicon:new(meoxassets.icon_lumminus,
 		function() meoxcolour:lumMinus() end)
+
+	self.icon_defs["pet_back"] = meoxicon:new(meoxassets.icon_back,
+		function()
+			meoxmachine:transitionState("meox_pet","meox_idle1")
+			self:switchToMenu("main_menu")
+		end)
 end

@@ -84,7 +84,7 @@ end
 
 function MeoxIcons:draw()
 	render:setup3DCanvas()
-	render:setup3DShader()
+	render:setup3DShader(false)
 
 	self.camera:pushToShader()
 
@@ -226,7 +226,7 @@ end
 function MeoxIcons:updateModelPositions(dt)
 	dt = dt * 8
 	if dt > 1.0 then dt = 1.0 end
-	self.y_acc_start = l_interp(self.y_acc_start, -0.8 * self.selection_index + 2.5, dt)
+	self.y_acc_start = l_interp(self.y_acc_start, -0.8 * self.selection_index + 1.5, dt)
 
 	--local y_acc = -0.4 * self.selection_index
 	local y_acc = self.y_acc_start

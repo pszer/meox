@@ -39,11 +39,14 @@ function MeoxAssets:init()
 	self.button_m2_img = assets:getTextureReference("m2.png")
 	self.button_r2_img = assets:getTextureReference("r2.png")
 
+	self.case_img = assets:getTextureReference("case.png")
+
 	self.button_l_rect = {30 ,360,64,58}
 	self.button_m_rect = {113,356,63,64}
 	self.button_r_rect = {192,369,63,54}
 
-	self.case_img = assets:getTextureReference("case.png")
+	self.pet_region = {116,63,222,205}
+
 end
 
 return MeoxAssets

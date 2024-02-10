@@ -350,7 +350,55 @@ function MeoxStateMachine:init()
 			 meoxanim.meoxi:getAnimationInterp() + dt*2.0)
 		end
 		)
--- meox_idlesit
+-- meox_eat
+
+-- meox_pet
+	self.states["meox_pet"] =
+		meoxstate:new({ },
+		function(self,machine) -- enter
+			meoxanim.animator1:playAnimationByName("idlesit",0,rand,true)
+			meoxanim.animator2:playAnimationByName("idlepet",0,1.00,true,
+				function()
+				end)
+			meoxicons:hide()
+			scene:setCameraAngle(camera_angles.pet)
+		end,
+
+		function(self,machine) -- leave
+			meoxicons:switchToMenu("main_menu")
+			meoxicons:show()
+		end,
+
+		function(self,machine) -- update
+			local mx,my = love.mouse.getPosition()
+			local function test_rect(r)
+				return mx >= r[1] and
+							 my >= r[2] and
+							 mx <= r[1]+r[3] and
+							 my <= r[2]+r[4]
+			end
+
+			if scancodeIsHeld("mouse1",CTRL.META) and test_rect(meoxassets.pet_region) then
+				local rand = 1.0
+				local dt = love.timer.getDelta() -- step interp towards animation slot 1
+				meoxanim.meoxi:setAnimationInterp(
+				 meoxanim.meoxi:getAnimationInterp() - dt*3.5)
+			else
+				local dt = love.timer.getDelta() -- step interp towards animation slot 2
+				meoxanim.meoxi:setAnimationInterp(
+				 meoxanim.meoxi:getAnimationInterp() + dt*3.5)
+			end
+
+			if meoxbuttons:MDown() then
+				meoxbuttons.state_m="held"
+				print("meox!")
+				machine:transitionState("meox_pet","meox_idle1")
+				meoxicons:show()
+				return
+			end
+		end
+		)
+-- meox_pet
 
 end
 

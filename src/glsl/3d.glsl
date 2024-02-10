@@ -123,6 +123,8 @@ uniform bool MatValueExists;
 uniform Image MatOutline;
 uniform bool MatOutlineExists;
 
+uniform bool u_enable_shadows;
+
 float random(vec3 seed, int i){
 	vec4 seed4 = vec4(seed,i);
 	float dot_product = dot(seed4, vec4(12.9898,78.233,45.164,94.673));
@@ -269,7 +271,7 @@ void effect( ) {
 	}
 
 	float light = 1.0;
-	if (dot(frag_v_normal,vec3(0.0,-1,1.2)) <= 0.0) {
+	if (dot(frag_v_normal,vec3(0.0,-1,1.2)) <= 0.0 && u_enable_shadows) {
 		light = 0.1;
 	}
 

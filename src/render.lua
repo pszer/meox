@@ -30,7 +30,7 @@ function Render:init()
 
 	self.shader3d = shader:new(
 		love.graphics.newShader("glsl/3d.glsl","glsl/3d.glsl"),
-		{u_light={1.0,1.0,1.0}})
+		{u_light={1.0,1.0,1.0},u_enable_shadows=true})
 
 	self.shader_gamma = shader:new(
 		love.graphics.newShader("glsl/gamma.glsl","glsl/gamma.glsl"),
@@ -52,9 +52,10 @@ function Render:setup3DCanvas()
 		depthstencil = self.viewport3d_depth
 	 }
 end
-function Render:setup3DShader()
+function Render:setup3DShader(shadows)
 	self.shader3d:set()
 	love.graphics.setDepthMode("less",true)
+	self.shader3d:send("u_enable_shadows", shadows)
 end
 function Render:dropShader()
 	love.graphics.setShader()
