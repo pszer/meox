@@ -237,6 +237,23 @@ vec3 hslToRgb(vec3 hslColor) {
     return rgbColor + vec3(m);
 }
 
+vec3 specular_highlight( vec3 normal , vec3 light_dir, vec4 light_col ) {
+	float specular_strength = 1.2;
+
+	vec3 view_dir = normalize( view_pos - frag_w_position );
+	vec3 light_dir_n = normalize( light_dir);
+	vec3 halfway_v = normalize(light_dir_n + view_dir);
+
+	float spec = pow(  max(dot(normal,halfway_v),  0.0), 1024);
+	if (spec > 0.5) {
+		spec = 1.0;
+	} else {
+		spec = 0.0;
+	}
+
+	return spec * specular_strength * light_col.rgb * light_col.a;
+}
+
 void effect( ) {
 	// when drawing the model in contour line phase, we only need a solid
 	// colour and can skip all the other fragment calculations
@@ -271,14 +288,23 @@ void effect( ) {
 	}
 
 	float light = 1.0;
-	if (dot(frag_v_normal,vec3(0.0,-1,1.2)) <= 0.0 && u_enable_shadows) {
-		light = 0.1;
+	vec3 specular = vec3(0,0,0);
+	vec3 lightdir = vec3(0.0,-1.1,1.2);
+	if (u_enable_shadows) {
+		float dotr = max(0.0,dot(frag_v_normal,lightdir));
+		//if (dot(frag_v_normal,vec3(0.0,-1,1.2)) <= 0.0 && u_enable_shadows) {
+		//	light = 0.1;
+		//}
+		//light = pow(dotr,0.5);
+		if (dotr <= 0.0) {
+			light = 0.1;
+		}
 	}
 
 	vec4 emission;
 	emission = Texel(MatEmission, VaryingTexCoord.xy);
 
-	love_Canvases[0] = texcolor*vec4(u_light,1.0)*light + texcolor*vec4(emission.xyz,1.0);
+	love_Canvases[0] = VaryingColor * texcolor*vec4(u_light,1.0)*light + texcolor*vec4(emission.xyz,1.0) + vec4(specular,1.0);
 	love_Canvases[0].a = 1.0;
 }
 

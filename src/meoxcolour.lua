@@ -147,7 +147,7 @@ function MeoxCol:lumPlus()
 end
 function MeoxCol:lumMinus()
 	self.hsl[3] = self.hsl[3] - 0.05
-	if self.hsl[3] < 0 then self.hsl[3]=0 end
+	if self.hsl[3] < 0.2 then self.hsl[3]=0.2 end
 	self:generateTexture()
 end
 

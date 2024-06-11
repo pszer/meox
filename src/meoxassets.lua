@@ -32,6 +32,7 @@ function MeoxAssets:init()
 	self.iconi.props.model_i_contour_flag = true
 
 	self.case_img = assets:getTextureReference("case.png")
+	self.caseh_img = assets:getTextureReference("caseh.png")
 	self.button_l1_img = assets:getTextureReference("l1.png")
 	self.button_m1_img = assets:getTextureReference("m1.png")
 	self.button_r1_img = assets:getTextureReference("r1.png")
@@ -40,6 +41,7 @@ function MeoxAssets:init()
 	self.button_r2_img = assets:getTextureReference("r2.png")
 
 	self.case_img = assets:getTextureReference("case.png")
+	self.case_moon = assets:getTextureReference("moon.png")
 
 	self.button_l_rect = {30 ,360,64,58}
 	self.button_m_rect = {113,356,63,64}

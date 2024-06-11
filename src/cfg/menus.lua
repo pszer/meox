@@ -30,5 +30,9 @@ return {
 		"satplus",
 		"satminus",
 		"colour_back"
+	},
+
+	["sleep_menu"] = {
+		"sleep_back"
 	}
 }

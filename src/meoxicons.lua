@@ -166,7 +166,14 @@ function MeoxIcons:updateModels(dt)
 	self:updateModelPositions(dt)
 	self:iconsFaceCamera()
 	for i,v in ipairs(self.icon_gui_stack) do
+		local col = v.props.icongui_model.props.model_i_colour
 
+		--[[local meoxcolour = require 'meoxcolour'
+		local hsl = meoxcolour.hsl
+		local rgb = meoxcolour:hslToRgb{hsl[1],0.5,0.8}
+		col[1]=rgb[1]
+		col[2]=rgb[2]
+		col[3]=rgb[3]--]]
 	end
 end
 

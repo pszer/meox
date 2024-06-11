@@ -17,6 +17,8 @@ function meoxicons:init()
 
 	self.icon_defs["sleep"] = meoxicon:new(meoxassets.icon_sleep,
 		function()
+			meoxmachine:transitionState("meox_idle", "meox_sleep")
+			self:switchToMenu("sleep_menu")
 		end)
 	self.icon_defs["eat"] = meoxicon:new(meoxassets.icon_eat,
 		function()
@@ -75,6 +77,12 @@ function meoxicons:init()
 	self.icon_defs["pet_back"] = meoxicon:new(meoxassets.icon_back,
 		function()
 			meoxmachine:transitionState("meox_pet","meox_idle1")
+			self:switchToMenu("main_menu")
+		end)
+
+	self.icon_defs["sleep_back"] = meoxicon:new(meoxassets.icon_back,
+		function()
+			meoxmachine:transitionState("meox_sleep","meox_idle1")
 			self:switchToMenu("main_menu")
 		end)
 end

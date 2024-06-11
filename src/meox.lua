@@ -25,11 +25,7 @@ function Meox:load()
 	assets:openModel("bowl.iqm")
 
 	meoxassets:init()
-	--local meox = Model:fromLoader("meox.iqm")
-	--meoxi = ModelInstance:newInstance(meox)
-	--meoxi.props.model_i_contour_flag = true
 	scene:addModel(meoxassets.meoxi)
-	--scene:addModel(meoxassets.iconi)
 
 	meoxanim:init(meoxassets.meoxi)
 
@@ -46,7 +42,6 @@ function Meox:load()
 	meoxicons:init()
 	meoxicons:switchToMenu("main_menu")
 	meoxicons:hide()
-	--
 end
 
 function Meox:update(dt)
@@ -118,8 +113,6 @@ function Meox:update(dt)
 		if meoxbuttons:MDown() then
 			meoxicons:click() end
 	end
-	--scene.props.scene_camera:setPosition(cam_pos)
-	--scene.props.scene_camera:setRotation(cam_rot)
 end
 
 function Meox:draw()
@@ -130,7 +123,13 @@ function Meox:draw()
 	render:blit3DCanvasToViewport()
 
 	--love.graphics.setCanvas(render.viewport)
+	local meoxcolour = require 'meoxcolour'
+	local hsl = meoxcolour.hsl
+	local rgb = meoxcolour:hslToRgb{hsl[1],hsl[2],math.max(hsl[3]*0.5+0.35,0.45)}
+	love.graphics.setColor(rgb[1],rgb[2],rgb[3],1.0)
 	love.graphics.draw(meoxassets.case_img,0,0,0,1,1)
+	love.graphics.setColor(1,1,1,1)
+	love.graphics.draw(meoxassets.caseh_img,0,0,0,1,1)
 	meoxbuttons:draw()
 end
 

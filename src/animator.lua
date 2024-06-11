@@ -68,6 +68,10 @@ function Animator:update()
 	end
 end
 
+function Animator:isPlaying()
+	return self.anim_play_animation
+end
+
 -- stops the animation ands calls anim_finish_callback
 function Animator:suspendAnimation()
 	if not self.anim_play_animation then return end

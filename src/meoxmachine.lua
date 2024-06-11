@@ -356,7 +356,7 @@ function MeoxStateMachine:init()
 	self.states["meox_pet"] =
 		meoxstate:new({ },
 		function(self,machine) -- enter
-			meoxanim.animator1:playAnimationByName("idlesit",0,rand,true)
+			meoxanim.animator1:playAnimationByName("beingpet",0,rand,true)
 			meoxanim.animator2:playAnimationByName("idlepet",0,1.00,true,
 				function()
 				end)
@@ -387,15 +387,47 @@ function MeoxStateMachine:init()
 				local dt = love.timer.getDelta() -- step interp towards animation slot 2
 				meoxanim.meoxi:setAnimationInterp(
 				 meoxanim.meoxi:getAnimationInterp() + dt*3.5)
-			end
+			end--]]
+			--[[
+			if scancodeIsHeld("mouse1",CTRL.META) and test_rect(meoxassets.pet_region) then
+				local action = meoxanim.action
+				if not action:isPlaying() then
+					action:playAnimationByName("beingpetted",0,1,false)
+				end
+			end--]]
 
 			if meoxbuttons:MDown() then
 				meoxbuttons.state_m="held"
-				print("meox!")
 				machine:transitionState("meox_pet","meox_idle1")
 				meoxicons:show()
 				return
 			end
+		end
+		)
+-- meox_pet
+--
+-- meox_sleep
+	self.states["meox_sleep"] =
+		meoxstate:new({ },
+		function(self,machine) -- enter
+			meoxanim.animator2:playAnimationByName("idlesleep",0,1.00,true,
+				function()
+				end)
+			local scene = require 'scene'
+			scene.props.scene_nightmode = true
+			scene:setCameraAngle(camera_angles.sleep)
+		end,
+
+		function(self,machine) -- leave
+			meoxicons:switchToMenu("main_menu")
+			local scene = require 'scene'
+			scene.props.scene_nightmode = false
+		end,
+
+		function(self,machine) -- update
+			local dt = love.timer.getDelta() -- step interp towards animation slot 2
+			meoxanim.meoxi:setAnimationInterp(
+			 meoxanim.meoxi:getAnimationInterp() + dt * 0.8)
 		end
 		)
 -- meox_pet

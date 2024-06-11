@@ -680,6 +680,9 @@ function ModelInstance:draw(shader, is_main_pass)
 
 	local props = self.props
 
+	local colour = props.model_i_colour
+	love.graphics.setColor(colour[1],colour[2],colour[3],colour[4])
+
 	if props.model_i_draw_instances then
 		self:drawInstances(shader)
 	elseif is_main_pass then
@@ -694,6 +697,7 @@ function ModelInstance:draw(shader, is_main_pass)
 		love.graphics.setFrontFaceWinding("ccw")
 	end
 	shadersend(shader, "u_skinning", 0)
+	love.graphics.setColor(1,1,1,1)
 end
 
 function ModelInstance:callDrawMesh()

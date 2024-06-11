@@ -13,6 +13,7 @@ ScenePropPrototype = Props:prototype{
 	{"scene_background1", "table", nil, PropDefaultTable{}, "scene background colour"},
 	{"scene_background2", "table", nil, PropDefaultTable{}, "scene background colour"},
 	{"scene_camera", "camera", nil, nil, "scene's camera"},
-	{"scene_camera_interp_speed", "number", 2.5, nil, "scene's camera movement interp speed"}
+	{"scene_camera_interp_speed", "number", 2.5, nil, "scene's camera movement interp speed"},
+	{"scene_nightmode", "boolean", false, nil, "background night mode"},
 												
 }

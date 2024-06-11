@@ -12,6 +12,11 @@ local MeoxButtons = {
 MeoxButtons.__index = MeoxButtons
 
 function MeoxButtons:draw()
+	local meoxcolour = require 'meoxcolour'
+	local hsl = meoxcolour.hsl
+	local rgb = meoxcolour:hslToRgb{hsl[1],hsl[2],0.5}
+	love.graphics.setColor(rgb[1],rgb[2],rgb[3],1.0)
+
 	--left button
 	if self.state_l == "none" or self.state_l == "hover" then
 		love.graphics.draw(meoxassets.button_l1_img,
