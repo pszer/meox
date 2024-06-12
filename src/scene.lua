@@ -27,7 +27,8 @@ local Scene = {
 
 	target_pos = camera_angles.default.pos,
 	target_rot = camera_angles.default.rot,
-	moon_phase_in = 0.0
+	moon_phase_in = 0.0,
+	modulate_bg = false
 }
 Scene.__index = Scene
 
@@ -42,14 +43,16 @@ function Scene:update(dt)
 	local r1,g1,b1,r2,g2,b2
 
 	if self.props.scene_nightmode then
-		local rgb2 = meoxcolour:hslToRgb{hsl[1], hsl[2]*0.65+0.2, 0.1}
+		local rgb2 = meoxcolour:hslToRgb{hsl[1], hsl[2]*0.65+0.2, 0.2}
 		r2,g2,b2 = 0,0,0
 		r1,g1,b1 = rgb2[1],rgb2[2],rgb2[3]
+		modulate_bg = true
 	else
 		local rgb1 = meoxcolour:hslToRgb{hsl[1]-60, hsl[2]*0.65+0.2, math.max(0.45,math.min(hsl[3]*0.8,0.4))}
 		local rgb2 = meoxcolour:hslToRgb{hsl[1], hsl[2]*0.65+0.2, math.max(0.45,0.1+math.min(hsl[3]*0.8,0.4))}
 		r1,g1,b1 = rgb1[1]/1.2+0.1,rgb1[2]/1.2+0.1,rgb1[3]/1.2+0.1
 		r2,g2,b2 = rgb2[1]/1.2+0.35,rgb2[2]/1.2+0.35,rgb2[3]/1.2+0.35
+		modulate_bg = false
 	end
 
 	self.props.scene_background2 = {r2,g2,b2}
@@ -60,7 +63,7 @@ function Scene:update(dt)
 	--
 	
 	if self.props.scene_nightmode then
-		self.moon_phase_in = self.moon_phase_in + love.timer.getDelta()*0.1
+		self.moon_phase_in = self.moon_phase_in + love.timer.getDelta()*0.20
 		if self.moon_phase_in > 1.0 then
 			self.moon_phase_in = 1.0
 		end
@@ -120,7 +123,10 @@ function Scene:draw()
 
 	local bg_col1 = self.props.scene_background1
 	local bg_col2 = self.props.scene_background2
-	local modulate = 1.0 + 0.5*math.sin(love.timer.getTime())
+	local modulate = 3
+	if self.modulate then
+		modulate = 1.0 + 0.5*math.sin(love.timer.getTime())
+	end
 	local bg_shader = render.shader_background
 
 	local vw,vh = render.viewport3d:getDimensions()

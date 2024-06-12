@@ -82,10 +82,11 @@ function MeoxCol:hslToRgb(hslColor)
 	return rgbColor
 end
 
-function MeoxCol:setHSV(hsv)
-	self.hsv[1] = hsv[1]
-	self.hsv[2] = hsv[2]
-	self.hsv[3] = hsv[3]
+function MeoxCol:setHSL(hsl)
+	self.hsl[1] = hsl[1]
+	self.hsl[2] = hsl[2]
+	self.hsl[3] = hsl[3]
+	self:generateTexture()
 end
 
 function MeoxCol:generateColorTexture()

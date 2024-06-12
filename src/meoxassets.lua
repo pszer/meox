@@ -49,6 +49,10 @@ function MeoxAssets:init()
 
 	self.pet_region = {116,63,222,205}
 
+	self.hunger_i = assets:getTextureReference("hunger.png")
+	self.sleep_i = assets:getTextureReference("sleep.png")
+	self.fun_i = assets:getTextureReference("fun.png")
+
 end
 
 return MeoxAssets

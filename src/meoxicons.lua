@@ -32,7 +32,8 @@ local MeoxIcons = {
 
 	selection_index = 1,
 
-	hidden = true
+	hidden = true,
+	curr_menu = nil
 
 }
 MeoxIcons.__index = MeoxIcons
@@ -120,6 +121,7 @@ function MeoxIcons:click()
 end
 
 function MeoxIcons:switchToMenu(name)
+	self.curr_menu = name
 	local menu = menus[name]
 	if not menu then error("MeoxIcons:switchToMenu(): undefined menu") end
 

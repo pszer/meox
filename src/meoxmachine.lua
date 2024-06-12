@@ -19,29 +19,56 @@ local MeoxStateMachine = {
 	states = {},
 	active_states = {},
 
-	hunger_v = 1.0,
+	hunger_v = 0.5,
 	sleep_v  = 1.0,
 	fun_v    = 0.5,
 
 }
 MeoxStateMachine.__index = MeoxStateMachine
 
+function MeoxStateMachine:changeHungerByTime(dt)
+	self.hunger_v = self.hunger_v + dt/(3600*5.5*1000)
+	if self.hunger_v < 0.0 then self.hunger_v = 0.0 end
+	if self.hunger_v > 1.0 then self.hunger_v = 1.0 end
+end
+function MeoxStateMachine:changeHunger(d)
+	self.hunger_v = self.hunger_v + d
+	if self.hunger_v < 0.0 then self.hunger_v = 0.0 end
+	if self.hunger_v > 1.0 then self.hunger_v = 1.0 end
+end
+
+function MeoxStateMachine:changeFunByTime(dt)
+	self.fun_v = self.fun_v + dt/(3600*4*1000)
+	if self.fun_v < 0.0 then self.fun_v = 0.0 end
+	if self.fun_v > 1.0 then self.fun_v = 1.0 end
+end
+function MeoxStateMachine:changeFun(d)
+	self.fun_v = self.fun_v + d
+	if self.fun_v < 0.0 then self.fun_v = 0.0 end
+	if self.fun_v > 1.0 then self.fun_v = 1.0 end
+end
+
+function MeoxStateMachine:changeSleepByTime(dt)
+	self.sleep_v = self.sleep_v + dt/(3600*16*1000)
+	if self.sleep_v < 0.0 then self.sleep_v = 0.0 end
+	if self.sleep_v > 1.0 then self.sleep_v = 1.0 end
+end
+function MeoxStateMachine:changeSleep(d)
+	self.sleep_v = self.sleep_v + dt
+	if self.sleep_v < 0.0 then self.sleep_v = 0.0 end
+	if self.sleep_v > 1.0 then self.sleep_v = 1.0 end
+end
+
 function MeoxStateMachine:update(dt)
 	for i,v in ipairs(self.active_states) do
 		v:update(self)
 	end
 
-	self.hunger_v = self.hunger_v - dt/(3600 * 5)
-	if self.hunger_v < 0.0 then self.hunger_v = 0.0 end
-	if self.hunger_v > 1.0 then self.hunger_v = 1.0 end
-
-	self.sleep_v = self.sleep_v - dt/(3600 * 12)
-	if self.sleep_v < 0.0 then self.sleep_v = 0.0 end
-	if self.sleep_v > 1.0 then self.sleep_v = 1.0 end
-
-	self.fun_v = self.fun_v - dt/(3600 * 4)
-	if self.fun_v < 0.0 then self.fun_v = 0.0 end
-	if self.fun_v > 1.0 then self.fun_v = 1.0 end
+	self:changeHungerByTime(-dt)
+	self:changeFunByTime(-dt)
+	if not self:isStateActive("meox_sleep") then
+		self:changeSleepByTime(-dt)
+	end
 end
 
 -- returns false is state already active, otherwise true
@@ -136,9 +163,10 @@ function MeoxStateMachine:isStateActive(s)
 		return false
 	end
 
-	for i,v in ipairs(self.states) do
-		traverse(v)
+	for i,v in ipairs(self.active_states) do
+		if traverse(v) then return true end
 	end
+	return false
 end
 
 function MeoxStateMachine:init()
@@ -338,7 +366,7 @@ function MeoxStateMachine:init()
 		end,
 
 		function(self,machine) -- leave
-			machine.hunger_v = 1.0
+			MeoxStateMachine:changeHunger(0.5)
 			scene:removeModel(meoxassets.bowli)
 			meoxicons:switchToMenu("main_menu")
 			meoxbuttons:unlock()
@@ -383,6 +411,7 @@ function MeoxStateMachine:init()
 				local dt = love.timer.getDelta() -- step interp towards animation slot 1
 				meoxanim.meoxi:setAnimationInterp(
 				 meoxanim.meoxi:getAnimationInterp() - dt*3.5)
+				MeoxStateMachine:changeFun(dt/15)
 			else
 				local dt = love.timer.getDelta() -- step interp towards animation slot 2
 				meoxanim.meoxi:setAnimationInterp(
@@ -416,18 +445,22 @@ function MeoxStateMachine:init()
 			local scene = require 'scene'
 			scene.props.scene_nightmode = true
 			scene:setCameraAngle(camera_angles.sleep)
+			meoxicons:hide()
 		end,
 
 		function(self,machine) -- leave
 			meoxicons:switchToMenu("main_menu")
 			local scene = require 'scene'
 			scene.props.scene_nightmode = false
+			meoxicons:show()
 		end,
 
 		function(self,machine) -- update
+			print("wonga")
 			local dt = love.timer.getDelta() -- step interp towards animation slot 2
 			meoxanim.meoxi:setAnimationInterp(
 			 meoxanim.meoxi:getAnimationInterp() + dt * 0.8)
+			MeoxStateMachine:changeSleepByTime(dt)
 		end
 		)
 -- meox_pet

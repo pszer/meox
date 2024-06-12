@@ -6,7 +6,7 @@ local meoxanim    = require "meoxanim"
 local meoxmachine = require "meoxmachine"
 local meoxassets  = require "meoxassets"
 local meoxbuttons = require "meoxbuttons"
-
+local meoxsave = require 'meoxsave'
 local meoxicons   = require "meoxicons"
 require "meoxiconsinit"
 
@@ -37,11 +37,13 @@ function Meox:load()
 	anim2:staticAnimationByName("default")
 
 	meoxmachine:init()
-	meoxmachine:activateState("meox_idle1")
+	--meoxmachine:activateState("meox_idle1")
 
 	meoxicons:init()
-	meoxicons:switchToMenu("main_menu")
+--	meoxicons:switchToMenu("main_menu")
 	meoxicons:hide()
+
+	meoxsave:readFromFile()
 end
 
 function Meox:update(dt)
@@ -54,31 +56,21 @@ function Meox:update(dt)
 	meoxmachine:update(dt)
 	meoxanim:updateActionAnimation()
 
-	--[[meoxcol.hsl[1] = meoxcol.hsl[1] + dt*160.0
-	if meoxcol.hsl[1] >= 360 then
-		meoxcol.hsl[1] = 0.0
-	end
-	meoxcol:generateTexture()--]]
-
 	if scancodeIsHeld("left", CTRL.META) then
 		cam_rot[2] = cam_rot[2] - 1*dt
-		--cam_pos[1] = cam_pos[1] - 5*dt
 	end
 	if scancodeIsHeld("right", CTRL.META) then
 		cam_rot[2] = cam_rot[2] + 1*dt
-		--cam_pos[1] = cam_pos[1] + 5*dt
 	end
 	if scancodeIsHeld("up", CTRL.META) then
 		local sinT = math.sin(cam_rot[2])
 		local cosT = math.cos(cam_rot[2])
-		--cam_pos[3] = cam_pos[3] - 5*dt
 		cam_pos[1] = cam_pos[1] + (sinT * 5*dt)
 		cam_pos[3] = cam_pos[3] - (cosT * 5*dt)
 	end
 	if scancodeIsHeld("down", CTRL.META) then
 		local sinT = math.sin(cam_rot[2])
 		local cosT = math.cos(cam_rot[2])
-		--cam_pos[3] = cam_pos[3] + 5*dt
 		cam_pos[1] = cam_pos[1] - (sinT * 5*dt)
 		cam_pos[3] = cam_pos[3] + (cosT * 5*dt)
 	end
@@ -130,7 +122,35 @@ function Meox:draw()
 	love.graphics.draw(meoxassets.case_img,0,0,0,1,1)
 	love.graphics.setColor(1,1,1,1)
 	love.graphics.draw(meoxassets.caseh_img,0,0,0,1,1)
+	if meoxicons.hidden and (meoxicons.curr_menu=="main_menu") then
+		love.graphics.draw(meoxassets.hunger_i)
+		love.graphics.draw(meoxassets.sleep_i)
+		love.graphics.draw(meoxassets.fun_i)
+
+		-- fun meter
+		love.graphics.rectangle("line",38,78,82,20)
+		love.graphics.rectangle("line",39,79,80,18)
+		love.graphics.rectangle("fill",40,80,(meoxmachine.fun_v+1/79)*79,16)
+		-- sleep meter
+		love.graphics.rectangle("line",38,134,82,20)
+		love.graphics.rectangle("line",39,135,80,18)
+		love.graphics.rectangle("fill",40,136,(meoxmachine.sleep_v+1/79)*79,16)
+		-- hunger meter
+		love.graphics.rectangle("line",38,190,82,20)
+		love.graphics.rectangle("line",39,191,80,18)
+		love.graphics.rectangle("fill",40,192,(meoxmachine.hunger_v+1/79)*79,16)
+	end
+
 	meoxbuttons:draw()
+
+end
+
+function Meox:quit()
+	local machine = meoxmachine
+	local hsl = meoxcol.hsl
+
+	local meoxsave = require 'meoxsave'
+	meoxsave:saveToFile(machine, hsl)
 end
 
 return Meox
