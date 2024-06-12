@@ -21,8 +21,6 @@ function MeoxSave:saveToFile(machine, col)
 	save.timestamp = timestamp
 	save.hsl = meoxcolour.hsl
 
-	print("sleeping",save.sleeping)
-
 	file = love.filesystem.newFile("meox.txt")
 	file:open("w")
 	text = serialise(save)
@@ -39,10 +37,6 @@ function MeoxSave:readFromFile(filename)
 	file:close()
 
 	data = loadstring(data)()
-
-	for i,v in pairs(data) do
-		print(i,v)
-	end
 
 	meoxmachine.hunger_v = data.hunger_v
 	meoxmachine.sleep_v = data.sleep_v

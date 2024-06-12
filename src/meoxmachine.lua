@@ -456,7 +456,6 @@ function MeoxStateMachine:init()
 		end,
 
 		function(self,machine) -- update
-			print("wonga")
 			local dt = love.timer.getDelta() -- step interp towards animation slot 2
 			meoxanim.meoxi:setAnimationInterp(
 			 meoxanim.meoxi:getAnimationInterp() + dt * 0.8)

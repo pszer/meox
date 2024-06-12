@@ -52,8 +52,8 @@ function Meox:update(dt)
 	
 	meoxbuttons:update(dt)
 	meoxicons:update(dt)
-	scene:update(dt)
 	meoxmachine:update(dt)
+	scene:update(dt)
 	meoxanim:updateActionAnimation()
 
 	if scancodeIsHeld("left", CTRL.META) then
