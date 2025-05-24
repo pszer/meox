@@ -224,7 +224,7 @@ function MeoxStateMachine:init()
 
 	local last_idle1_time = 0
 	local last_idle2_time = 0
-	local last_idle3_time = 0
+	local last_idle2_time = 0
 	local last_idlesit_time = 0
 
 	local idle_anim_name = "idle2"
@@ -251,7 +251,7 @@ function MeoxStateMachine:init()
 				if rand<0.5 then
 					idle_anim_name = "idle2"
 				else
-					idle_anim_name = "idle3"
+					idle_anim_name = "idle2"
 				end
 
 				machine:transitionState("meox_idle1","meox_idle2")

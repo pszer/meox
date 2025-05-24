@@ -36,21 +36,25 @@ function MeoxSave:readFromFile(filename)
 	data = file:read()
 	file:close()
 
-	data = loadstring(data)()
-
-	meoxmachine.hunger_v = data.hunger_v
-	meoxmachine.sleep_v = data.sleep_v
-	meoxmachine.fun_v = data.fun_v
-	meoxcolour:setHSL(data.hsl)
+	local old_timestamp
+	if data then
+		data = loadstring(data)()
+		meoxmachine.hunger_v = data.hunger_v
+		meoxmachine.sleep_v = data.sleep_v
+		meoxmachine.fun_v = data.fun_v
+		meoxcolour:setHSL(data.hsl)
+		old_timestamp = data.timestamp
+	else
+		old_timestamp = os.time(os.date("!*t"))
+	end
 
 	local curr_timestamp = os.time(os.date("!*t"))
-	local old_timestamp = data.timestamp
 	local dt = (curr_timestamp - old_timestamp) * 1000
 
 	print("dt is ",dt)
 	meoxmachine:changeHungerByTime(-dt)
 	meoxmachine:changeFunByTime(-dt)
-	if data.sleeping then
+	if data and data.sleeping then
 		meoxmachine:changeSleepByTime(dt)
 		meoxmachine:activateState("meox_sleep")
 		meoxicons:switchToMenu("sleep_menu")
